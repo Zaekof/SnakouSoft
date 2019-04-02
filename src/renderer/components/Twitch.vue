@@ -15,7 +15,7 @@
       return {
         status: false,
         inter: null,
-        url: 'http://localhost/api/twitch/status'
+        url: 'http://z-api.fr:8080/api/twitch/status'
       }
     },
     methods: {
@@ -59,7 +59,7 @@
                             })
                         }
                     }
-                }                
+                }
             }
         } else {
             store.set('TwitchStatus', false)
@@ -68,7 +68,6 @@
       interval () {
         let _this = this
         this.inter = setInterval(function () {
-          console.log('inter')
           _this.main()
         }, 60000)
       },

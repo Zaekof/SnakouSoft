@@ -29,7 +29,7 @@
         linksPlaylist: 'https://www.googleapis.com/youtube/v3/playlistItems',
         playlistId: 'UUOhP0t6arWMXqmcroJjMJ7A',
         maxResult: '12',
-        url: 'http://localhost/api/youtube/lastvideo'
+        url: 'http://z-api.fr:8080/api/youtube/lastvideo'
       }
     },
     methods: {
@@ -107,7 +107,6 @@
       interval () {
         let _this = this
         this.inter = setInterval(function () {
-          console.log('inter')
           _this.main()
         }, 60000)
       },
@@ -171,8 +170,19 @@
   }
   #wrapper iframe {
     width: 50%;
-    height: 250px;
+    height: calc(50vh - 50px);
 
     float: left;
+    opacity: 0;
+    animation: 1s opacityVideo 1s forwards;
+  }
+
+  @keyframes opacityVideo {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 </style>

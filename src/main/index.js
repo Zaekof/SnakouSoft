@@ -22,7 +22,7 @@ function createWindow () {
     height: 700,
     minWidth: 1000,
     minHeight: 700,
-    resizable: false,
+    resizable: true,
     webPreferences: {
       nodeIntegration: true,
       allowRunningInsecureContent: false,

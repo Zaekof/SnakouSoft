@@ -6793,6 +6793,10 @@ swap-case@^1.1.0:
     lower-case "^1.1.1"
     upper-case "^1.1.1"
 
+sweetalert2@^8.8.0:
+  version "8.8.0"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-8.8.0.tgz#131d7f6c2bfb9e944f5ef187b2cc402b02a89d8c"
+
 tapable@^1.0.0, tapable@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/tapable/-/tapable-1.1.1.tgz#4d297923c5a72a42360de2ab52dadfaaec00018e"
