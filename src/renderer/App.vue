@@ -21,6 +21,7 @@
   import twitchView from './components/twitch'
   import Store from 'electron-store'
   import fs from 'fs'
+  import fse from 'fs-extra'
   import download from 'download'
   import Swal from 'sweetalert2'
 
@@ -47,15 +48,16 @@
         store.set('notification', this.notification)
         console.log(store.get('notification'))
       },
-      downloadAudio: function () {       
+      downloadAudio: function () {   
+        let url = require('path').join(__static, '/notif.mp3')    
         if (!fs.existsSync('Settings')) {
           fs.mkdirSync('Settings')
-          download('https://snakou.loicnogier.fr/notif.mp3').pipe(fs.createWriteStream('Settings/notif.mp3'));
+          fse.copySync(url, 'Settings/notif.mp3')
+          //download('https://snakou.loicnogier.fr/notif.mp3').pipe(fs.createWriteStream('Settings/notif.mp3'));
         }
-
       }
     },
-    created() {    
+    created() {
       this.downloadAudio()
       if (typeof(store.get('firstRunCheck')) === typeof(undefined)) {
         this.firstRunCheck = false

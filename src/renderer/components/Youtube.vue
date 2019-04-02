@@ -101,7 +101,7 @@
         this.firstRun = false
       },
       remove () {
-        store.delete('LastVideo')
+        //store.delete('LastVideo')
         store.delete('TwitchStatus')
       },
       interval () {

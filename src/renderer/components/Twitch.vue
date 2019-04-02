@@ -42,7 +42,6 @@
       },
       async main () {
         this.status = await this.getStream()
-
         if (this.status) {
             if (!store.get('TwitchStatus')) {
                 store.set('TwitchStatus', true)

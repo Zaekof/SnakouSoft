@@ -34,7 +34,7 @@ function createWindow () {
     }
   })
 
-  tray = new Tray(require('path').join(__dirname, '/icon.ico'))
+  tray = new Tray(require('path').join(__static, '/icon.ico'))
 
   let contextMenu = Menu.buildFromTemplate([
     {
