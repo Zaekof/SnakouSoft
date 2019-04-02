@@ -1,5 +1,5 @@
-import { shell, app, BrowserWindow } from 'electron'
-
+import { shell, app, Tray, BrowserWindow, clipboard, Menu } from 'electron'
+import notifier from 'node-notifier'
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -9,6 +9,8 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let mainWindow
+let tray = null
+
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
@@ -27,8 +29,36 @@ function createWindow () {
       nodeIntegration: true,
       allowRunningInsecureContent: false,
       webSecurity: true,
-      nativeWindowOpen: true
+      nativeWindowOpen: true,
+      devTools: false
     }
+  })
+
+  tray = new Tray(require('path').join(__dirname, '/icon.ico'))
+
+  let contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Show App', click: function () {
+        mainWindow.show()
+      }
+    },
+    {
+      label: 'Quit', click: function () {
+        app.isQuiting = true
+        app.quit()
+      }
+    }
+  ])
+  tray.setToolTip('Snakou Application')
+  tray.setContextMenu(contextMenu)
+  tray.on('click', () => {
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
+  })
+  mainWindow.on('show', () => {
+    tray.setHighlightMode('always')
+  })
+  mainWindow.on('hide', () => {
+    tray.setHighlightMode('never')
   })
  
   mainWindow.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
@@ -38,6 +68,14 @@ function createWindow () {
 
   mainWindow.loadURL(winURL)
 
+  mainWindow.on('minimize', (event) => {
+    event.preventDefault()
+    mainWindow.hide()
+    notifier.notify({
+      title: 'Snakou Application',
+      message: "The application is minimize"
+    })    
+  })
   mainWindow.on('closed', () => {
     mainWindow = null
   })
@@ -46,6 +84,7 @@ function createWindow () {
 app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
+  tray.destroy()
   if (process.platform !== 'darwin') {
     app.quit()
   }
