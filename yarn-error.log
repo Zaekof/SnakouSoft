@@ -16,7 +16,7 @@ Platform:
 npm manifest: 
   {
     "name": "snakou",
-    "version": "1.0.1",
+    "version": "1.3",
     "author": "zaekof ",
     "description": "A Snakou software, get last videos and streams notification",
     "license": "MIT",
@@ -39,7 +39,8 @@ npm manifest:
         "output": "build"
       },
       "files": [
-        "dist/electron/**/*"
+        "dist/electron/**/*",
+        "dist/electron/static/*"
       ],
       "dmg": {
         "contents": [
@@ -60,8 +61,7 @@ npm manifest:
         "icon": "build/icons/icon.icns"
       },
       "win": {
-        "icon": "build/icons/icon.ico",
-        "certificateFile" : "cert.pfx"
+        "icon": "build/icons/icon.ico"
       },
       "linux": {
         "icon": "build/icons"
@@ -80,6 +80,7 @@ npm manifest:
       "download": "^7.1.0",
       "electron-store": "^3.0.0",
       "fs": "^0.0.1-security",
+      "fs-extra": "^7.0.1",
       "howler": "^2.1.1",
       "jquery": "^3.3.1",
       "node-notifier": "^5.4.0",

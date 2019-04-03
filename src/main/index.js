@@ -1,4 +1,4 @@
-import { shell, app, Tray, BrowserWindow, clipboard, Menu } from 'electron'
+import { shell, app, Tray, BrowserWindow, Menu } from 'electron'
 import notifier from 'node-notifier'
 /**
  * Set `__static` path to static files in production
@@ -30,7 +30,7 @@ function createWindow () {
       allowRunningInsecureContent: false,
       webSecurity: true,
       nativeWindowOpen: true,
-      devTools: false
+      devTools: true
     }
   })
 
@@ -38,12 +38,13 @@ function createWindow () {
 
   let contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Show App', click: function () {
+      label: "Afficher l'application", click: function () {
         mainWindow.show()
       }
     },
     {
-      label: 'Quit', click: function () {
+      label: 'Quitter', click: function () {
+        mainWindow = null
         app.isQuiting = true
         app.quit()
       }
@@ -73,11 +74,12 @@ function createWindow () {
     mainWindow.hide()
     notifier.notify({
       title: 'Snakou Application',
-      message: "The application is minimize"
+      message: "L'application est minimisée"
     })    
   })
   mainWindow.on('closed', () => {
     mainWindow = null
+    app.quit()
   })
 }
 

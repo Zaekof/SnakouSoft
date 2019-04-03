@@ -15,8 +15,9 @@
     </div>  
     <div class="col-6 text-right">
       <span style="line-height: 40px">
-        <a v-if="audio" class="text-white" href="#" @click="changeAudio()" role="button"><i class="fas fa-volume-up"></i> </a>
-        <a v-else-if="!audio" class="text-white" href="#" @click="changeAudio()" role="button"><i class="fas fa-volume-mute"></i></a>
+        <a v-if="update" class="text-white" href="#" @click="open(updateLink)" role="button"><i class="fas fa-download"></i> </a>
+        <a v-if="audio" class="text-white ml-2" href="#" @click="changeAudio()" role="button"><i class="fas fa-volume-up"></i> </a>
+        <a v-else-if="!audio" class="text-white ml-2" href="#" @click="changeAudio()" role="button"><i class="fas fa-volume-mute"></i></a>
         <a v-if="notification" class="text-white ml-2" href="#" @click="changeNotif()" role="button"><i class="fas fa-bell"></i></a>
         <a v-else-if="!notification" class="text-white ml-2" href="#" @click="changeNotif()" role="button"><i class="fas fa-bell-slash"></i></a>
       </span>
@@ -25,18 +26,80 @@
 </template>
 
 <script>
+  import axios from 'axios'
   import Store from 'electron-store'
+import { clearInterval } from 'timers';
   const store = new Store()
+  const notifier = require('node-notifier')
 
   export default {
     name: 'headerView', 
     data: () => {
       return {
         audio: false,
-        notification: false
+        update: false,
+        updateLink: null,
+        notification: false,
+        updateNotification: false,
+        updateInter: null,
+        version: process.env.npm_package_version.replace('.0', '')
       }
     },
     methods: {
+      updateInterval: function () {
+        if (this.updateInter !== null) {
+          clearInterval(this.updateInter)
+          this.updateInter = null
+        }
+        let _this = this
+        this.updateInter = setInterval(function () {
+          _this.checkUpdate()
+        }, 5000)
+      },
+      checkUpdate: async function () {
+        let _this = this
+        try {
+          const response = await axios.get('https://api.github.com/repos/Zaekof/SnakouApplication/tags')
+
+          if (response.status === 200 && response.data) {
+            let GitVersion = response.data[response.data.length - 1].name
+            if (GitVersion > this.version) {
+              this.update = true
+              this.updateLink = 'https://github.com/Zaekof/SnakouApplication/releases/tag/'+GitVersion
+              if (!this.updateNotification) {
+                this.updateNotification = true
+                notifier.notify(
+                  {
+                    title: 'Snakou Application',
+                    message: 'Nouvelle mise à jour disponible !',
+                    wait: true,
+                    open: 'https://github.com/Zaekof/SnakouApplication/releases/tag/'+GitVersion
+                  },
+                  function(err, response) {
+                    console.log(response)
+                  }
+                )
+
+                notifier.on('click', function(notifierObject, options) {
+                  _this.open(options.open)
+                })
+              }
+            } else {
+              this.update = false
+              this.updateNotification = false
+            }
+          } else {
+            clearInterval(this.updateInter)
+            this.updateInterval()
+            return false
+          }
+        } catch (error) {
+          console.log(error)
+          clearInterval(this.updateInter)
+          this.updateInterval()
+          return false
+        }        
+      },      
       changeAudio: function () {
         this.audio = !this.audio
 
@@ -48,10 +111,12 @@
         this.$emit('settingsNotif', this.notification)
       },
       open (link) {
-          this.$electron.shell.openExternal(link)
+        this.$electron.shell.openExternal(link)
       }
     },
     mounted() {
+      this.checkUpdate()
+      this.updateInterval()
       this.audio = store.get('audio')
       this.notification = store.get('notification')
     },

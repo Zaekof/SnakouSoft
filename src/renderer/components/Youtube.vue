@@ -1,6 +1,5 @@
 <template>
   <div class="mt-2 mb-2" id="wrapper">
-      <!--<a href="#!" @click="remove()">remove</a>-->
       <iframe v-for="video in videos" :key="video.id" width="100%" height="100%" v-bind:src="`https://www.youtube-nocookie.com/embed/${video}`"
         frameborder="0" allowfullscreen>
       </iframe>
@@ -29,7 +28,7 @@
         linksPlaylist: 'https://www.googleapis.com/youtube/v3/playlistItems',
         playlistId: 'UUOhP0t6arWMXqmcroJjMJ7A',
         maxResult: '12',
-        url: 'http://z-api.fr:8080/api/youtube/lastvideo'
+        url: 'https://zapi.z-api.fr/api/youtube/lastvideo'
       }
     },
     methods: {
@@ -100,10 +99,6 @@
         }
         this.firstRun = false
       },
-      remove () {
-        //store.delete('LastVideo')
-        store.delete('TwitchStatus')
-      },
       interval () {
         let _this = this
         this.inter = setInterval(function () {
@@ -149,7 +144,7 @@
       }
 
       this.main()
-      this.interval()   
+      this.interval()
     }
   }
 </script>
@@ -170,7 +165,7 @@
   }
   #wrapper iframe {
     width: 50%;
-    height: calc(50vh - 50px);
+    height: calc(50vh - 55px);
 
     float: left;
     opacity: 0;

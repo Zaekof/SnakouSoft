@@ -22,7 +22,6 @@
   import Store from 'electron-store'
   import fs from 'fs'
   import fse from 'fs-extra'
-  import download from 'download'
   import Swal from 'sweetalert2'
 
   const store = new Store()
@@ -41,21 +40,28 @@
       updateAudio: function (data) {
         this.audio = data
         store.set('audio', this.audio)
-        console.log(store.get('audio'))
       }, 
       updateNotif: function (data) {
         this.notification = data
         store.set('notification', this.notification)
-        console.log(store.get('notification'))
       },
-      downloadAudio: function () {   
+      downloadAudio: function () {
         let url = require('path').join(__static, '/notif.mp3')    
         if (!fs.existsSync('Settings')) {
           fs.mkdirSync('Settings')
           fse.copySync(url, 'Settings/notif.mp3')
-          //download('https://snakou.loicnogier.fr/notif.mp3').pipe(fs.createWriteStream('Settings/notif.mp3'));
         }
       }
+    },
+    mounted() {
+      if (process.env.NODE_ENV === 'development') {
+        document.addEventListener('keyup', (event) => {
+          const key = event.key
+          if (key === 'a') {
+            store.delete('firstRunCheck')
+          }
+        }, false)
+      }      
     },
     created() {
       this.downloadAudio()
@@ -63,24 +69,24 @@
         this.firstRunCheck = false
         store.set('firstRunCheck', false)
         Swal.fire({
-          title: '<strong>First launch</strong>',
+          title: '<strong>Premier lancement</strong>',
           type: 'info',
           html:
-            '<ul> <h3>What is this software for?</h3>' +
-            '<li style="text-align:left; width: 320px; margin-left: 110px">Watch the latest videos of Snakou.</li>' +
-            '<li style="text-align:left; width: 320px; margin-left: 110px">Receive notifications when Snakou releases a new video or start live stream.</li>' +
+            '<ul> <h3>A quoi sert ce logiciel ?</h3>' +
+            '<li style="text-align:left; width: 320px; margin-left: 110px">Regardez les dernières vidéos de Snakou.</li>' +
+            '<li style="text-align:left; width: 320px; margin-left: 110px">Recevoir des notifications lorsque Snakou sort une nouvelle vidéo ou lance un streaming en direct.</li>' +
             '</ul>' +
-            '<ul> <h3>If you have any problems</h3>' +
-            '<li style="text-align:left; width: 320px; margin-left: 110px">Contact me on Twitter <a target="_blank" href="https://twitter.com/zaekof">@Zaekof</a></li>' +
+            '<ul> <h3>Si vous rencontrez avez des problèmes</h3>' +
+            '<li style="text-align:left; width: 320px; margin-left: 110px">Contactez-moi sur Twitter <a target="_blank" href="https://twitter.com/zaekof">@Zaekof</a></li>' +
             '</ul>',            
           showCloseButton: true,
           showCancelButton: true,
           focusConfirm: false,
           confirmButtonText:
-            '<i class="fa fa-thumbs-up"></i> Great!',
+            '<i class="fa fa-thumbs-up"></i> Génial!',
           confirmButtonAriaLabel: 'Thumbs up, great!',
           cancelButtonText:
-            'Close',
+            'Fermer',
         })          
       }
       if (typeof(store.get('audio')) === typeof(undefined)) {

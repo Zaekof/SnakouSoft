@@ -15,7 +15,7 @@
       return {
         status: false,
         inter: null,
-        url: 'http://z-api.fr:8080/api/twitch/status'
+        url: 'https://zapi.z-api.fr/api/twitch/status'
       }
     },
     methods: {
@@ -42,6 +42,7 @@
       },
       async main () {
         this.status = await this.getStream()
+
         if (this.status) {
             if (!store.get('TwitchStatus')) {
                 store.set('TwitchStatus', true)
@@ -82,8 +83,8 @@
             },
           })
 
-          if (response.status === 200 && response.data) {
-            return response.data 
+          if (response.status === 200) {
+            return response.data
           } else {
             clearInterval(this.inter)
             this.interval()
