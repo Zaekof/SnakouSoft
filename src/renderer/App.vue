@@ -53,16 +53,6 @@
         }
       }
     },
-    mounted() {
-      if (process.env.NODE_ENV === 'development') {
-        document.addEventListener('keyup', (event) => {
-          const key = event.key
-          if (key === 'a') {
-            store.delete('firstRunCheck')
-          }
-        }, false)
-      }      
-    },
     created() {
       this.downloadAudio()
       if (typeof(store.get('firstRunCheck')) === typeof(undefined)) {
@@ -94,9 +84,19 @@
       }
       if (typeof(store.get('notification')) === typeof(undefined)) {
         this.updateNotif(false)
-      }
+      }     
     }
   }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.which === 123) {
+      require('remote').getCurrentWindow().toggleDevTools()
+    } else if (e.which === 116) {
+      location.reload()
+    } else if (e.which === 82) {
+      store.delete('firstRunCheck')
+    }
+  })     
 </script>
 
 <style>

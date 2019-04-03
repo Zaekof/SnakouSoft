@@ -11,10 +11,10 @@
   import axios from 'axios'
   import Store from 'electron-store'
   import fs from 'fs'
-  import {Howl, Howler} from 'howler'
+  import Howl from 'howler'
+  import notifier from 'node-notifier'
 
   const store = new Store()
-  const notifier = require('node-notifier')
 
   export default {
     name: 'youtube',

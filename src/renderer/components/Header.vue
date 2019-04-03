@@ -42,7 +42,7 @@ import { clearInterval } from 'timers';
         notification: false,
         updateNotification: false,
         updateInter: null,
-        version: process.env.npm_package_version.replace('.0', '')
+        version: 1.3
       }
     },
     methods: {
@@ -54,7 +54,7 @@ import { clearInterval } from 'timers';
         let _this = this
         this.updateInter = setInterval(function () {
           _this.checkUpdate()
-        }, 5000)
+        }, 80000)
       },
       checkUpdate: async function () {
         let _this = this
@@ -63,6 +63,7 @@ import { clearInterval } from 'timers';
 
           if (response.status === 200 && response.data) {
             let GitVersion = response.data[response.data.length - 1].name
+            GitVersion = parseFloat(GitVersion)
             if (GitVersion > this.version) {
               this.update = true
               this.updateLink = 'https://github.com/Zaekof/SnakouApplication/releases/tag/'+GitVersion

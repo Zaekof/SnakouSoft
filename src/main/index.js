@@ -29,10 +29,11 @@ function createWindow () {
       nodeIntegration: true,
       allowRunningInsecureContent: false,
       webSecurity: true,
-      nativeWindowOpen: true,
-      devTools: true
+      nativeWindowOpen: true
     }
   })
+
+  mainWindow.webContents.openDevTools()
 
   tray = new Tray(require('path').join(__static, '/icon.ico'))
 
