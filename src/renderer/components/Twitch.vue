@@ -3,11 +3,11 @@
 <script>
   import axios from 'axios'
   import Store from 'electron-store'
-  import {Howl, Howler} from 'howler'
   import fs from 'fs'
 
   const store = new Store()
   const notifier = require('node-notifier')
+  const {Howl, Howler} = require('howler')
 
   export default {
     name: 'twitch',
@@ -49,16 +49,15 @@
 
                 if (store.get('notification')) {
                     this.notification('twitch')
-                    if (store.get('audio')) {
-                        if (fs.existsSync('Settings/notif.mp3')) {
-                            let sound = new Howl({
-                                src: ['Settings/notif.mp3'],
-                                autoplay: true,
-                                loop: false,
-                                volume: 0.1,
-                            })
-                        }
-                    }
+                      if (store.get('audio')) {
+                        let url = require('path').join(__static, '/notif.mp3')
+                        let sound = new Howl({
+                          src: [''+url+''],
+                          autoplay: true,
+                          loop: false,
+                          volume: 0.1,
+                        }) 
+                      }
                 }
             }
         } else {

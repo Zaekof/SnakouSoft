@@ -1,9 +1,10 @@
 <template>
   <div class="mt-2 mb-2" id="wrapper">
-      <iframe v-for="video in videos" :key="video.id" width="100%" height="100%" v-bind:src="`https://www.youtube-nocookie.com/embed/${video}`"
-        frameborder="0" allowfullscreen>
-      </iframe>
 
+    <iframe id="ytplayer" type="text/html" v-for="video in videos" :key="video.id" width="100%" height="100%" 
+      v-bind:src="`https://www.youtube.com/embed/${video}?playlist=&version=3&cc_load_policy=1&enablejsapi=1&modestbranding=1&playsinline=1&start=0&color=white`"
+      frameborder="0" allowfullscreen />
+  
   </div>
 </template>
 
@@ -11,9 +12,9 @@
   import axios from 'axios'
   import Store from 'electron-store'
   import fs from 'fs'
-  import Howl from 'howler'
   import notifier from 'node-notifier'
 
+  const {Howl, Howler} = require('howler')
   const store = new Store()
 
   export default {
@@ -86,14 +87,13 @@
           if (store.get('notification')) {
             this.notification('youtube', this.videos[0])
             if (store.get('audio')) {
-              if (fs.existsSync('Settings/notif.mp3')) {
-                let sound = new Howl({
-                  src: ['Settings/notif.mp3'],
-                  autoplay: true,
-                  loop: false,
-                  volume: 0.1,
-                })
-              }
+              let url = require('path').join(__static, '/notif.mp3')
+              let sound = new Howl({
+                src: [''+url+''],
+                autoplay: true,
+                loop: false,
+                volume: 0.1,
+              }) 
             }
           }
         }
@@ -165,11 +165,11 @@
   }
   #wrapper iframe {
     width: 50%;
-    height: calc(50vh - 55px);
+    height: 250px;
 
     float: left;
     opacity: 0;
-    animation: 1s opacityVideo 1s forwards;
+    animation: 1.5s opacityVideo 1.5s forwards;
   }
 
   @keyframes opacityVideo {
@@ -180,4 +180,15 @@
       opacity: 1;
     }
   }
+
+  @media screen and (min-width: 1000px) and (max-width: 1200px) {
+    #wrapper iframe {
+      height: 350px;
+    }
+  }  
+  @media screen and (min-width: 1200px) {
+    #wrapper iframe {
+      height: 500px;
+    }
+  }  
 </style>

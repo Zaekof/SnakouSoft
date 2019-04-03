@@ -44,17 +44,9 @@
       updateNotif: function (data) {
         this.notification = data
         store.set('notification', this.notification)
-      },
-      downloadAudio: function () {
-        let url = require('path').join(__static, '/notif.mp3')    
-        if (!fs.existsSync('Settings')) {
-          fs.mkdirSync('Settings')
-          fse.copySync(url, 'Settings/notif.mp3')
-        }
       }
     },
     created() {
-      this.downloadAudio()
       if (typeof(store.get('firstRunCheck')) === typeof(undefined)) {
         this.firstRunCheck = false
         store.set('firstRunCheck', false)
@@ -89,14 +81,14 @@
   }
 
   document.addEventListener("keydown", function (e) {
-    if (e.which === 123) {
-      require('remote').getCurrentWindow().toggleDevTools()
-    } else if (e.which === 116) {
+    if (e.which === 116) {
       location.reload()
     } else if (e.which === 82) {
       store.delete('firstRunCheck')
+      store.delete('LastVideo')
+      store.delete('TwitchStatus')
     }
-  })     
+  })
 </script>
 
 <style>

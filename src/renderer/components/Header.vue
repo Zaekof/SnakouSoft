@@ -15,6 +15,7 @@
     </div>  
     <div class="col-6 text-right">
       <span style="line-height: 40px">
+        <a class="text-white" href="#" @click="help()" role="button"><i class="fas fa-info"></i> </a>
         <a v-if="update" class="text-white" href="#" @click="open(updateLink)" role="button"><i class="fas fa-download"></i> </a>
         <a v-if="audio" class="text-white ml-2" href="#" @click="changeAudio()" role="button"><i class="fas fa-volume-up"></i> </a>
         <a v-else-if="!audio" class="text-white ml-2" href="#" @click="changeAudio()" role="button"><i class="fas fa-volume-mute"></i></a>
@@ -28,7 +29,7 @@
 <script>
   import axios from 'axios'
   import Store from 'electron-store'
-import { clearInterval } from 'timers';
+  import Swal from 'sweetalert2'
   const store = new Store()
   const notifier = require('node-notifier')
 
@@ -42,10 +43,32 @@ import { clearInterval } from 'timers';
         notification: false,
         updateNotification: false,
         updateInter: null,
-        version: 1.3
+        version: 1.4
       }
     },
     methods: {
+      help: function () {
+        Swal.fire({
+          title: '<strong>Premier lancement</strong>',
+          type: 'info',
+          html:
+            '<ul> <h3>A quoi sert ce logiciel ?</h3>' +
+            '<li style="text-align:left; width: 320px; margin-left: 110px">Regardez les dernières vidéos de Snakou.</li>' +
+            '<li style="text-align:left; width: 320px; margin-left: 110px">Recevoir des notifications lorsque Snakou sort une nouvelle vidéo ou lance un streaming en direct.</li>' +
+            '</ul>' +
+            '<ul> <h3>Si vous rencontrez avez des problèmes</h3>' +
+            '<li style="text-align:left; width: 320px; margin-left: 110px">Contactez-moi sur Twitter <a target="_blank" href="https://twitter.com/zaekof">@Zaekof</a></li>' +
+            '</ul>',            
+          showCloseButton: true,
+          showCancelButton: true,
+          focusConfirm: false,
+          confirmButtonText:
+            '<i class="fa fa-thumbs-up"></i> Génial!',
+          confirmButtonAriaLabel: 'Thumbs up, great!',
+          cancelButtonText:
+            'Fermer',
+        }) 
+      },
       updateInterval: function () {
         if (this.updateInter !== null) {
           clearInterval(this.updateInter)

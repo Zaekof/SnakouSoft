@@ -33,7 +33,7 @@ function createWindow () {
     }
   })
 
-  mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 
   tray = new Tray(require('path').join(__static, '/icon.ico'))
 
