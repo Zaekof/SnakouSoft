@@ -79,16 +79,18 @@ function createWindow () {
     })    
   })
   mainWindow.on('closed', () => {
-    mainWindow = null
     app.quit()
   })
 }
 
 app.on('ready', createWindow)
-
+app.on('before-quit', () => {
+  mainWindow.removeAllListeners('close')
+  mainWindow.close()
+})
 app.on('window-all-closed', () => {
-  tray.destroy()
-  if (process.platform !== 'darwin') {
+  if (process.platform != 'darwin') {
+    tray.destroy()
     app.quit()
   }
 })

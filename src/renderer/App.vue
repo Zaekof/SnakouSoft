@@ -2,20 +2,21 @@
   <div class="container-fluid" id="app">
     <div class="row">
       <div class="col-12 bg-secondary">
-        <headerView @settingsAudio="updateAudio" @settingsNotif="updateNotif"></headerView>
+        <headerView :bus="bus" @settingsAudio="updateAudio" @settingsNotif="updateNotif"></headerView>
       </div>
     </div>
 
     <div class="row">
       <div class="col-12 bg-secondary">
         <youtubeView></youtubeView>  
-        <twitchView></twitchView>
+        <twitchView @TwitchStatusEvent="updateTwitchStatus"></twitchView>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import Vue from 'vue'
   import headerView from './components/header'
   import youtubeView from './components/youtube'
   import twitchView from './components/twitch'
@@ -33,7 +34,8 @@
       return {
         audio: false,
         notification: false,
-        firstRunCheck: true
+        firstRunCheck: true,
+        bus: new Vue()
       }
     },
     methods: {
@@ -44,6 +46,9 @@
       updateNotif: function (data) {
         this.notification = data
         store.set('notification', this.notification)
+      },
+      updateTwitchStatus: function (data) {
+        this.bus.$emit('TwitchEventBus', data)
       }
     },
     created() {

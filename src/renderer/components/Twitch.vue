@@ -44,24 +44,28 @@
         this.status = await this.getStream()
 
         if (this.status) {
-            if (!store.get('TwitchStatus')) {
-                store.set('TwitchStatus', true)
+          if (!store.get('TwitchStatus')) {
+            this.$emit('TwitchStatusEvent', true)
+            store.set('TwitchStatus', true)
 
-                if (store.get('notification')) {
-                    this.notification('twitch')
-                      if (store.get('audio')) {
-                        let url = require('path').join(__static, '/notif.mp3')
-                        let sound = new Howl({
-                          src: [''+url+''],
-                          autoplay: true,
-                          loop: false,
-                          volume: 0.1,
-                        }) 
-                      }
+            if (store.get('notification')) {
+              this.notification('twitch')
+                if (store.get('audio')) {
+                  let url = require('path').join(__static, '/notif.mp3')
+                  let sound = new Howl({
+                    src: [''+url+''],
+                    autoplay: true,
+                    loop: false,
+                    volume: 0.1,
+                  }) 
                 }
             }
-        } else {
+          }
+        } else if (!this.status) {
+          if (store.get('TwitchStatus')) {
+            this.$emit('TwitchStatusEvent', false)
             store.set('TwitchStatus', false)
+          }
         }
       },
       interval () {
@@ -101,14 +105,13 @@
       }
     },
     mounted() {
-      let _this = this
-
+      this.main()
+      this.interval()   
+    },
+    created() {
       if (typeof(store.get('TwitchStatus')) === typeof(undefined)) {
         store.set('TwitchStatus', false)
       }
-
-      this.main()
-      this.interval()   
     }
   }
 </script>

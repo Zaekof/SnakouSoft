@@ -1,26 +1,31 @@
 <template>
   <div class="row mt-2 bg-dark" style="height: 40px;">
-    <div class="col-6 text-left">
+    <div class="col-2 text-left">
       <p>
         <a href="#!" style="line-height: 40px" class="text-white" @click="open('https://twitter.com/mastersnakou')">
-          <i class="fab fa-twitter"></i> @MasterSnakou
+          <i class="fab fa-twitter"></i>
         </a>
-        <a href="#!" style="line-height: 40px" class="text-white ml-2" @click="open('https://twitch.tv/mastersnakou')">
-          <i class="fab fa-twitch"></i> @MasterSnakou
+        <a href="#!" style="line-height: 40px" class="text-white ml-3" @click="open('https://twitch.tv/mastersnakou')">
+          <i class="fab fa-twitch"></i>
         </a>
-        <a href="#!" style="line-height: 40px" class="text-white ml-2" @click="open('https://youtube.com/mastersnakou')">
-          <i class="fab fa-youtube"></i> @MasterSnakou
-        </a>       
+        <a href="#!" style="line-height: 40px" class="text-white ml-3" @click="open('https://youtube.com/mastersnakou')">
+          <i class="fab fa-youtube"></i>
+        </a>
       </p>
-    </div>  
-    <div class="col-6 text-right">
+    </div>
+    <div class="col-8 text-center">
+      <span style="line-height: 40px">
+        <a v-if="StatutStream" class="text-white ml-5" href="#" @click="open('https://twitch.tv/mastersnakou')" role="button"><i class="fab fa-twitch"></i> SNAKOU EN STREAM !</a>
+      </span>
+    </div>
+    <div class="col-2 text-right">
       <span style="line-height: 40px">
         <a class="text-white" href="#" @click="help()" role="button"><i class="fas fa-info"></i> </a>
         <a v-if="update" class="text-white" href="#" @click="open(updateLink)" role="button"><i class="fas fa-download"></i> </a>
-        <a v-if="audio" class="text-white ml-2" href="#" @click="changeAudio()" role="button"><i class="fas fa-volume-up"></i> </a>
-        <a v-else-if="!audio" class="text-white ml-2" href="#" @click="changeAudio()" role="button"><i class="fas fa-volume-mute"></i></a>
-        <a v-if="notification" class="text-white ml-2" href="#" @click="changeNotif()" role="button"><i class="fas fa-bell"></i></a>
-        <a v-else-if="!notification" class="text-white ml-2" href="#" @click="changeNotif()" role="button"><i class="fas fa-bell-slash"></i></a>
+        <a v-if="audio" class="text-white ml-3" href="#" @click="changeAudio()" role="button"><i class="fas fa-volume-up"></i> </a>
+        <a v-else-if="!audio" class="text-white ml-3" href="#" @click="changeAudio()" role="button"><i class="fas fa-volume-mute"></i></a>
+        <a v-if="notification" class="text-white ml-3" href="#" @click="changeNotif()" role="button"><i class="fas fa-bell"></i></a>
+        <a v-else-if="!notification" class="text-white ml-3" href="#" @click="changeNotif()" role="button"><i class="fas fa-bell-slash"></i></a>
       </span>
     </div>
   </div>
@@ -34,7 +39,8 @@
   const notifier = require('node-notifier')
 
   export default {
-    name: 'headerView', 
+    name: 'headerView',
+    props: ['bus'],
     data: () => {
       return {
         audio: false,
@@ -43,22 +49,22 @@
         notification: false,
         updateNotification: false,
         updateInter: null,
-        version: 1.4
+        version: 1.5,
+        StatutStream: false
       }
     },
     methods: {
       help: function () {
         Swal.fire({
-          title: '<strong>Premier lancement</strong>',
+          title: '<strong>Aide</strong>',
           type: 'info',
           html:
-            '<ul> <h3>A quoi sert ce logiciel ?</h3>' +
-            '<li style="text-align:left; width: 320px; margin-left: 110px">Regardez les dernières vidéos de Snakou.</li>' +
-            '<li style="text-align:left; width: 320px; margin-left: 110px">Recevoir des notifications lorsque Snakou sort une nouvelle vidéo ou lance un streaming en direct.</li>' +
-            '</ul>' +
+            '<ul> <h3>Vidéo non disponible</h3>' +
+            "<li style='text-align:left; width: 320px; margin-left: 110px'>Malheureusement pour le moment pas le choix, s'il vous arrive de tomber sur une vidéo non disponible, il vous faut l'ouvrir sur votre navigateur.</li>" +
+            '</ul>' +            
             '<ul> <h3>Si vous rencontrez avez des problèmes</h3>' +
-            '<li style="text-align:left; width: 320px; margin-left: 110px">Contactez-moi sur Twitter <a target="_blank" href="https://twitter.com/zaekof">@Zaekof</a></li>' +
-            '</ul>',            
+            "<li style='text-align:left; width: 320px; margin-left: 110px'>Pour me remonter les bugs, merci de directement me contacter <a href='https://twitter.com/zaekof' target='_blank'>ici</a>, Ou de faire une Issue <a href='https://github.com/Zaekof/SnakouApplication/issues' target='_blank'>ici</a>." +
+            '</ul>',
           showCloseButton: true,
           showCancelButton: true,
           focusConfirm: false,
@@ -143,13 +149,22 @@
       this.updateInterval()
       this.audio = store.get('audio')
       this.notification = store.get('notification')
+
+      this.bus.$on('TwitchEventBus', (data) => {
+        this.StatutStream = data
+        console.log(this.StatutStream)
+      })
     },
   }
 </script>
 
 <style scoped>
-  a[role='button'], {
+  a[role='button'] {
     cursor: pointer;
+  }
+  a i:hover {
+    transition: 0.5s;
+    color: aqua;
   }
 </style>
 
