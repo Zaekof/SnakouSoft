@@ -35,6 +35,7 @@
   import axios from 'axios'
   import Store from 'electron-store'
   import Swal from 'sweetalert2'
+
   const store = new Store()
   const notifier = require('node-notifier')
 
@@ -49,7 +50,7 @@
         notification: false,
         updateNotification: false,
         updateInter: null,
-        version: 1.5,
+        version: 1.7,
         StatutStream: false
       }
     },
@@ -64,6 +65,7 @@
             '</ul>' +            
             '<ul> <h3>Si vous rencontrez avez des problèmes</h3>' +
             "<li style='text-align:left; width: 320px; margin-left: 110px'>Pour me remonter les bugs, merci de directement me contacter <a href='https://twitter.com/zaekof' target='_blank'>ici</a>, Ou de faire une Issue <a href='https://github.com/Zaekof/SnakouApplication/issues' target='_blank'>ici</a>." +
+            "<li style='text-align:left; width: 320px; margin-left: 110px'>Astuce de dépanage, appuyer sur la touche R de votre clavier, puis la touche f5. Cette manipulation sert à effacer le cache du logiciel.</li>" +
             '</ul>',
           showCloseButton: true,
           showCancelButton: true,
@@ -83,7 +85,7 @@
         let _this = this
         this.updateInter = setInterval(function () {
           _this.checkUpdate()
-        }, 80000)
+        }, 30000)
       },
       checkUpdate: async function () {
         let _this = this
@@ -145,15 +147,16 @@
       }
     },
     mounted() {
-      this.checkUpdate()
       this.updateInterval()
       this.audio = store.get('audio')
       this.notification = store.get('notification')
 
       this.bus.$on('TwitchEventBus', (data) => {
         this.StatutStream = data
-        console.log(this.StatutStream)
       })
+    },
+    created() {
+      this.checkUpdate()
     },
   }
 </script>

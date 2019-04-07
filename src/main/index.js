@@ -9,7 +9,7 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let mainWindow
-let tray = null
+let tray
 
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
@@ -33,8 +33,6 @@ function createWindow () {
     }
   })
 
-  //mainWindow.webContents.openDevTools()
-
   tray = new Tray(require('path').join(__static, '/icon.ico'))
 
   let contextMenu = Menu.buildFromTemplate([
@@ -45,12 +43,12 @@ function createWindow () {
     },
     {
       label: 'Quitter', click: function () {
-        mainWindow = null
         app.isQuiting = true
         app.quit()
       }
     }
   ])
+
   tray.setToolTip('Snakou Application')
   tray.setContextMenu(contextMenu)
   tray.on('click', () => {
@@ -78,45 +76,23 @@ function createWindow () {
       message: "L'application est minimisée"
     })    
   })
-  mainWindow.on('closed', () => {
-    app.quit()
+
+
+  // mainWindow.webContents.openDevTools()
+  mainWindow.on('closed', function () {
+    mainWindow = null
   })
 }
 
 app.on('ready', createWindow)
-app.on('before-quit', () => {
-  mainWindow.removeAllListeners('close')
-  mainWindow.close()
-})
-app.on('window-all-closed', () => {
-  if (process.platform != 'darwin') {
+
+app.on('window-all-closed', function () {
+  if (process.platform !== 'darwin') {
     tray.destroy()
     app.quit()
-  }
+  } 
 })
 
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow()
-  }
+app.on('activate', function () {
+  if (mainWindow === null) createWindow()
 })
-
-/**
- * Auto Updater
- *
- * Uncomment the following code below and install `electron-updater` to
- * support auto updating. Code Signing with a valid certificate is required.
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
- */
-
-/*
-import { autoUpdater } from 'electron-updater'
-
-autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
-})
-
-app.on('ready', () => {
-  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
-})
- */

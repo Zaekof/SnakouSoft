@@ -19,37 +19,34 @@
       }
     },
     methods: {
-      notification (type, id) {
+      notification () {
         let _this = this
-        if (type == 'twitch') {
-          notifier.notify(
-            {
-              title: 'Twitch',
-              message: 'Snakou est en stream !',
-              wait: true,
-              open: 'https://twitch.tv/mastersnakou'
-            },
-            function(err, response) {
-              console.log(response)
-            }
-          )
+        notifier.notify(
+          {
+            title: 'Twitch',
+            message: 'Snakou est en stream !',
+            wait: true,
+            open: 'https://twitch.tv/mastersnakou'
+          },
+          function(err, response) {
+            console.log(response)
+          }
+        )
 
-          notifier.on('click', function(notifierObject, options) {
-            _this.$electron.shell.openExternal(options.open)
-          })          
-        }
-
+        notifier.on('click', function(notifierObject, options) {
+          _this.$electron.shell.openExternal(options.open)
+        })
       },
       async main () {
         this.status = await this.getStream()
 
         if (this.status) {
+          this.$emit('TwitchStatusEvent', true)
           if (!store.get('TwitchStatus')) {
-            this.$emit('TwitchStatusEvent', true)
             store.set('TwitchStatus', true)
 
             if (store.get('notification')) {
-              this.notification('twitch')
+              this.notification()
                 if (store.get('audio')) {
                   let url = require('path').join(__static, '/notif.mp3')
                   let sound = new Howl({
@@ -62,17 +59,15 @@
             }
           }
         } else if (!this.status) {
-          if (store.get('TwitchStatus')) {
             this.$emit('TwitchStatusEvent', false)
             store.set('TwitchStatus', false)
-          }
         }
       },
       interval () {
         let _this = this
         this.inter = setInterval(function () {
           _this.main()
-        }, 60000)
+        }, 30000)
       },
       async getStream () {
         try {

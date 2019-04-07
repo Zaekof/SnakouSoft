@@ -26,6 +26,7 @@
   import Swal from 'sweetalert2'
 
   const store = new Store()
+  
 
   export default {
     name: 'Snakou', 

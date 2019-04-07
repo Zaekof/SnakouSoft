@@ -33,59 +33,50 @@
       }
     },
     methods: {
-      notification (type, id) {
+      notification (id) {
         let _this = this
-        if (type == 'youtube') {
-          notifier.notify(
-            {
-              title: 'Youtube',
-              message: 'Nouvelle vidéo de Snakou!',
-              wait: true,
-              open: 'https://www.youtube.com/watch?v='+id
-            },
-            function(err, response) {
-              console.log(response)
-            }
-          )
+        notifier.notify(
+          {
+            title: 'Youtube',
+            message: 'Nouvelle vidéo de Snakou!',
+            wait: true,
+            open: 'https://www.youtube.com/watch?v='+id
+          },
+          function(err, response) {
+            console.log(response)
+          }
+        )
 
-          notifier.on('click', function(notifierObject, options) {
-            _this.$electron.shell.openExternal(options.open)
-          })
-        } else if (type == 'twitch') {
-          notifier.notify(
-            {
-              title: 'Twitch',
-              message: 'Snakou lance un stream !',
-              wait: true,
-              open: 'https://twitch.tv/mastersnakou'
-            },
-            function(err, response) {
-              console.log(response)
-            }
-          )
-
-          notifier.on('click', function(notifierObject, options) {
-            _this.$electron.shell.openExternal(options.open)
-          })          
-        }
-
+        notifier.on('click', function(notifierObject, options) {
+          _this.$electron.shell.openExternal(options.open)
+        })
       },
       async main () {
         let videos = await this.getVids()
-        let tmpVideos = []
-        videos.forEach(async (video, cpt) => {
-          let videoId = video.snippet.resourceId.videoId
 
-          if (videoId !== this.videos[cpt]) {
+        if (this.videos.length <= 0) {
+          videos.forEach(async (video, cpt) => {
+            let videoId = video.snippet.resourceId.videoId
             this.videos.push(videoId)
-          }
-        })
+          })
 
-        if (store.get('LastVideo') !== this.videos[0]) {
-          store.set('LastVideo', this.videos[0])
+        } else if (this.videos.length >= 10) {
+          videos.forEach(async (video, cpt) => {
+            let videoId = video.snippet.resourceId.videoId
+
+            if (videoId !== this.videos[cpt]) {
+              this.videos.pop()
+              this.videos.push(videoId)
+            }
+          })
+        }
+
+        let firstVideo = this.videos[0]
+        if (store.get('LastVideo') !== firstVideo) {
+          store.set('LastVideo', firstVideo)
 
           if (store.get('notification')) {
-            this.notification('youtube', this.videos[0])
+            this.notification(firstVideo)
             if (store.get('audio')) {
               let url = require('path').join(__static, '/notif.mp3')
               let sound = new Howl({
